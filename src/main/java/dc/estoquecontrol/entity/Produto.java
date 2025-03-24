@@ -1,5 +1,6 @@
 package dc.estoquecontrol.entity;
 
+import dc.estoquecontrol.dto.request.CriarProdutoRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,4 +30,12 @@ public class Produto {
     private BigDecimal preco;
 
     private LocalDateTime data;
+
+    public Produto(CriarProdutoRequest dto) {
+        this.nome = dto.nome();
+        this.categoria = dto.categoria();
+        this.quantidade = dto.quantidade();
+        this.preco = dto.preco();
+        this.data = dto.data();
+    }
 }
