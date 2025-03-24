@@ -1,15 +1,17 @@
 package dc.estoquecontrol.controller;
 
 import dc.estoquecontrol.dto.request.CriarProdutoRequest;
+import dc.estoquecontrol.dto.response.MostrarProdutoResponse;
 import dc.estoquecontrol.service.ProdutoService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -22,6 +24,17 @@ public class ProdutoController {
     public ResponseEntity criar(@RequestBody @Valid CriarProdutoRequest dto) {
         return service.criar(dto);
     }
+
+    @GetMapping
+    public ResponseEntity<Page<MostrarProdutoResponse>> listarTodosOsProdutos(@PageableDefault Pageable pageable) {
+        return service.listarTodosOsProdutos(pageable);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity listarProdutoPorId(@PathVariable UUID id) {
+        return service.listarProdutoPorId(id);
+    }
+
 
 
 }
