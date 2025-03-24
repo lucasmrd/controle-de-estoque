@@ -1,5 +1,6 @@
 package dc.estoquecontrol.controller;
 
+import dc.estoquecontrol.dto.request.AtualizarProdutoRequest;
 import dc.estoquecontrol.dto.request.CriarProdutoRequest;
 import dc.estoquecontrol.dto.response.MostrarProdutoResponse;
 import dc.estoquecontrol.service.ProdutoService;
@@ -33,6 +34,11 @@ public class ProdutoController {
     @GetMapping("/{id}")
     public ResponseEntity listarProdutoPorId(@PathVariable UUID id) {
         return service.listarProdutoPorId(id);
+    }
+
+    @PutMapping
+    public ResponseEntity atualizar(@RequestBody AtualizarProdutoRequest dto) {
+        return service.atualizar(dto);
     }
 
 

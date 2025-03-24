@@ -1,5 +1,6 @@
 package dc.estoquecontrol.service;
 
+import dc.estoquecontrol.dto.request.AtualizarProdutoRequest;
 import dc.estoquecontrol.dto.request.CriarProdutoRequest;
 import dc.estoquecontrol.dto.response.MostrarProdutoResponse;
 import dc.estoquecontrol.entity.Produto;
@@ -48,5 +49,13 @@ public class ProdutoService {
         var dtoResponse = new MostrarProdutoResponse(repository.getReferenceById(id));
 
         return ResponseEntity.ok(dtoResponse);
+    }
+
+    @Transactional
+    public ResponseEntity atualizar(AtualizarProdutoRequest dto) {
+        var produto = repository.getReferenceById(dto.id());
+        produto.atualizar(dto);
+
+        return ResponseEntity.ok(new MostrarProdutoResponse(produto));
     }
 }
