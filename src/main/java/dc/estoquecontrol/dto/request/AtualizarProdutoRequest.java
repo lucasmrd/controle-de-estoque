@@ -12,6 +12,5 @@ public record AtualizarProdutoRequest(
         String nome,
         Categoria categoria,
         Integer quantidade,
-        BigDecimal preco,
-        LocalDateTime data) {
+        BigDecimal preco) {
 }

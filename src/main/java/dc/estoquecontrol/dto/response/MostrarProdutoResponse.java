@@ -12,11 +12,10 @@ public record MostrarProdutoResponse(
         String nome,
         Categoria categoria,
         Integer quantidade,
-        BigDecimal preco,
-        LocalDateTime data) {
+        BigDecimal preco) {
 
     public MostrarProdutoResponse(Produto produto) {
         this(produto.getId(), produto.getNome(), produto.getCategoria(), produto.getQuantidade(),
-                produto.getPreco(), produto.getData());
+                produto.getPreco());
     }
 }
