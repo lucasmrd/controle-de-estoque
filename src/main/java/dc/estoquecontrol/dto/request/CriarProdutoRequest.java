@@ -16,6 +16,6 @@ public record CriarProdutoRequest(
         Integer quantidade,
         @NotNull
         BigDecimal preco,
-        @NotNull
+
         LocalDateTime data) {
 }

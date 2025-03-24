@@ -37,7 +37,7 @@ public class Produto {
         this.categoria = dto.categoria();
         this.quantidade = dto.quantidade();
         this.preco = dto.preco();
-        this.data = dto.data();
+        this.data = LocalDateTime.now();
     }
 
     public void atualizar(AtualizarProdutoRequest dto) {
