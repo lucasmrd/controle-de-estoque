@@ -41,6 +41,9 @@ public class ProdutoController {
         return service.atualizar(dto);
     }
 
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletar(@PathVariable UUID id) {
+        return service.deletar(id);
+    }
 
 }

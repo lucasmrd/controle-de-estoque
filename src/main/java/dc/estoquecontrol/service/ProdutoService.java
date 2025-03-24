@@ -58,4 +58,11 @@ public class ProdutoService {
 
         return ResponseEntity.ok(new MostrarProdutoResponse(produto));
     }
+
+    @Transactional
+    public ResponseEntity deletar(UUID id) {
+        repository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
