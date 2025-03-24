@@ -1,5 +1,6 @@
 package dc.estoquecontrol.entity;
 
+import dc.estoquecontrol.dto.request.AtualizarProdutoRequest;
 import dc.estoquecontrol.dto.request.CriarProdutoRequest;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,5 +38,22 @@ public class Produto {
         this.quantidade = dto.quantidade();
         this.preco = dto.preco();
         this.data = dto.data();
+    }
+
+    public void atualizar(AtualizarProdutoRequest dto) {
+        if (dto.nome() != null && !dto.nome().isBlank())
+            this.nome = dto.nome();
+
+        if (dto.categoria() != null)
+            this.categoria = dto.categoria();
+
+        if (dto.quantidade() != null)
+            this.quantidade = dto.quantidade();
+
+        if (dto.preco() != null)
+            this.preco = dto.preco();
+
+        if (dto.data() != null)
+            this.data = dto.data();
     }
 }
