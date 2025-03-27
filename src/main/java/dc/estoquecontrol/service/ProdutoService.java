@@ -52,8 +52,8 @@ public class ProdutoService {
     }
 
     @Transactional
-    public ResponseEntity atualizar(AtualizarProdutoRequest dto) {
-        var produto = repository.getReferenceById(dto.id());
+    public ResponseEntity atualizar(AtualizarProdutoRequest dto, UUID id) {
+        var produto = repository.getReferenceById(id);
         produto.atualizar(dto);
 
         return ResponseEntity.ok(new MostrarProdutoResponse(produto));
