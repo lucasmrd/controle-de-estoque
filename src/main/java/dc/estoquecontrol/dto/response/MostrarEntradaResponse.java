@@ -8,10 +8,13 @@ import java.util.UUID;
 
 public record MostrarEntradaResponse(
         UUID id,
+        UUID idProduto,
+        String nomeProduto,
         Integer quantidade,
         LocalDate data) {
 
     public MostrarEntradaResponse(Entrada entrada) {
-        this(entrada.getId(), entrada.getQuantidade(), entrada.getData());
+        this(entrada.getId(), entrada.getProduto().getId(),
+                entrada.getProduto().getNome(), entrada.getQuantidade(), entrada.getData());
     }
 }

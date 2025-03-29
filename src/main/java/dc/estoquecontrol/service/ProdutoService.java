@@ -27,8 +27,8 @@ public class ProdutoService {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.newInstance();
 
         var produto = new Produto(dto);
-        var dtoResponse = new MostrarProdutoResponse(produto);
         repository.save(produto);
+        var dtoResponse = new MostrarProdutoResponse(produto);
 
         var uri = uriBuilder.path("/api/produtos/{id}").buildAndExpand(produto.getId()).toUri();
 

@@ -28,8 +28,9 @@ public class EntradaService {
         var produto = produtoRepository.getReferenceById(dto.idProduto());
 
         var entrada = new Entrada(dto, produto);
-        var dtoResponse = new MostrarEntradaResponse(entrada);
         entradaRepository.save(entrada);
+        var dtoResponse = new MostrarEntradaResponse(entrada);
+
         produto.somarQuantidade(entrada.getQuantidade());
 
         var uri = uriBuilder.path("/api/entradas/{id}").buildAndExpand(entrada.getId()).toUri();
