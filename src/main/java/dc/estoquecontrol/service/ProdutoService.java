@@ -27,8 +27,8 @@ public class ProdutoService {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.newInstance();
 
         var produto = new Produto(dto);
-        var dtoResponse = new MostrarProdutoResponse(produto);
         repository.save(produto);
+        var dtoResponse = new MostrarProdutoResponse(produto);
 
         var uri = uriBuilder.path("/api/produtos/{id}").buildAndExpand(produto.getId()).toUri();
 
@@ -52,8 +52,8 @@ public class ProdutoService {
     }
 
     @Transactional
-    public ResponseEntity atualizar(AtualizarProdutoRequest dto) {
-        var produto = repository.getReferenceById(dto.id());
+    public ResponseEntity atualizar(AtualizarProdutoRequest dto, UUID id) {
+        var produto = repository.getReferenceById(id);
         produto.atualizar(dto);
 
         return ResponseEntity.ok(new MostrarProdutoResponse(produto));

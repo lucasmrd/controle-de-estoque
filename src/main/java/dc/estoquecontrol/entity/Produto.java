@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -30,14 +29,12 @@ public class Produto {
 
     private BigDecimal preco;
 
-    private LocalDateTime data;
 
     public Produto(CriarProdutoRequest dto) {
         this.nome = dto.nome();
         this.categoria = dto.categoria();
         this.quantidade = dto.quantidade();
         this.preco = dto.preco();
-        this.data = LocalDateTime.now();
     }
 
     public void atualizar(AtualizarProdutoRequest dto) {
@@ -52,8 +49,9 @@ public class Produto {
 
         if (dto.preco() != null)
             this.preco = dto.preco();
+    }
 
-        if (dto.data() != null)
-            this.data = dto.data();
+    public void somarQuantidade(Integer quantidadeEntrada) {
+        this.quantidade += quantidadeEntrada;
     }
 }

@@ -36,9 +36,9 @@ public class ProdutoController {
         return service.listarProdutoPorId(id);
     }
 
-    @PutMapping
-    public ResponseEntity atualizar(@RequestBody AtualizarProdutoRequest dto) {
-        return service.atualizar(dto);
+    @PutMapping("/{id}")
+    public ResponseEntity atualizar(@RequestBody AtualizarProdutoRequest dto, @PathVariable UUID id) {
+        return service.atualizar(dto, id);
     }
 
     @DeleteMapping("/{id}")
