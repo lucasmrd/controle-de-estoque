@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -50,5 +49,9 @@ public class Produto {
 
         if (dto.preco() != null)
             this.preco = dto.preco();
+    }
+
+    public void somarQuantidade(Integer quantidadeEntrada) {
+        this.quantidade += quantidadeEntrada;
     }
 }
