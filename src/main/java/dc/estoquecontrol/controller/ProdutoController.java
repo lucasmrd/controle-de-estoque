@@ -27,7 +27,7 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<MostrarProdutoResponse>> listarTodosOsProdutos(@PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<MostrarProdutoResponse>> listarTodosOsProdutos(@PageableDefault(size = 20) Pageable pageable) {
         return service.listarTodosOsProdutos(pageable);
     }
 

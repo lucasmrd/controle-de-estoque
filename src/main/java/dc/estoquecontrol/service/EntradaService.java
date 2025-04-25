@@ -44,10 +44,22 @@ public class EntradaService {
     public ResponseEntity<Page<MostrarEntradaResponse>> listarTodasAsEntradas(Pageable pageable) {
         var page = entradaRepository.findAll(pageable).map(MostrarEntradaResponse::new);
 
-        if (page.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-
         return ResponseEntity.ok(page);
     }
+
+    public ResponseEntity<Page<MostrarEntradaResponse>> filtrarPorMesEAno(Integer mes, Integer ano, Pageable pageable) {
+        Page<Entrada> page = entradaRepository.findByMesEAno(mes, ano, pageable);
+        return ResponseEntity.ok(page.map(MostrarEntradaResponse::new));
+    }
+
+    public ResponseEntity<Page<MostrarEntradaResponse>> filtrarPorMes(Integer mes, Pageable pageable) {
+        Page<Entrada> page = entradaRepository.findByMes(mes, pageable);
+        return ResponseEntity.ok(page.map(MostrarEntradaResponse::new));
+    }
+
+    public ResponseEntity<Page<MostrarEntradaResponse>> filtrarPorAno(Integer ano, Pageable pageable) {
+        Page<Entrada> page = entradaRepository.findByAno(ano, pageable);
+        return ResponseEntity.ok(page.map(MostrarEntradaResponse::new));
+    }
+
 }

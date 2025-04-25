@@ -28,4 +28,30 @@ public class EntradaController {
         return service.listarTodasAsEntradas(pageable);
     }
 
+    @GetMapping("/filtrar")
+    public ResponseEntity<Page<MostrarEntradaResponse>> filtrarPorMesEAno(
+            @RequestParam Integer mes,
+            @RequestParam Integer ano,
+            @PageableDefault Pageable pageable
+    ) {
+        return service.filtrarPorMesEAno(mes, ano, pageable);
+    }
+
+    // Filtragem por Mês
+    @GetMapping("/filtrar/mes")
+    public ResponseEntity<Page<MostrarEntradaResponse>> filtrarPorMes(
+            @RequestParam Integer mes,
+            @PageableDefault Pageable pageable
+    ) {
+        return service.filtrarPorMes(mes, pageable);
+    }
+
+    // Filtragem por Ano
+    @GetMapping("/filtrar/ano")
+    public ResponseEntity<Page<MostrarEntradaResponse>> filtrarPorAno(
+            @RequestParam Integer ano,
+            @PageableDefault Pageable pageable
+    ) {
+        return service.filtrarPorAno(ano, pageable);
+    }
 }

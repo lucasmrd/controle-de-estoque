@@ -1,10 +1,8 @@
 package dc.estoquecontrol.entity;
 
+import dc.estoquecontrol.dto.request.AtualizarFuncionarioRequest;
 import dc.estoquecontrol.dto.request.CriarFuncionarioRequest;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -23,7 +21,16 @@ public class Funcionario {
 
     private String nome;
 
+    private boolean ativo;
+
     public Funcionario(CriarFuncionarioRequest dto) {
         this.nome = dto.nome();
+        this.ativo = true;
+    }
+
+    public void atualizar(AtualizarFuncionarioRequest dto) {
+        if (dto.nome() != null && !dto.nome().isBlank()) {
+            this.nome = dto.nome();
+        }
     }
 }

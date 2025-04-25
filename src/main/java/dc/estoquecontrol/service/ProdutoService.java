@@ -36,11 +36,7 @@ public class ProdutoService {
     }
 
     public ResponseEntity<Page<MostrarProdutoResponse>> listarTodosOsProdutos(Pageable pageable) {
-        var page = repository.findAll(pageable).map(MostrarProdutoResponse::new);
-
-        if (page.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
+        var page = repository.findAllByAtivoTrue(pageable).map(MostrarProdutoResponse::new);
 
         return ResponseEntity.ok(page);
     }
@@ -61,7 +57,8 @@ public class ProdutoService {
 
     @Transactional
     public ResponseEntity deletar(UUID id) {
-        repository.deleteById(id);
+        var produto = repository.getReferenceById(id);
+        produto.setAtivo(false);
 
         return ResponseEntity.noContent().build();
     }
