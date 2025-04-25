@@ -15,7 +15,7 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:3000")
-                        .allowedOrigins("https://vercel.com/lucas-projects-9b79e7e8/gerenciador-cantina-front")
+                        .allowedOrigins("https://gerenciador-cantina-front-git-teste-lucas-projects-9b79e7e8.vercel.app/")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("Authorization", "Content-Type")
                         .allowCredentials(true);
