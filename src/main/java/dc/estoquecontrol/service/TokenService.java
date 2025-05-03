@@ -24,6 +24,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("cantina")
                     .withSubject(user.getUsername())
+                    .withClaim("nome", user.getNome())
                     .withExpiresAt(dataExpiracao())
                     .sign(algorithm);
         } catch (JWTCreationException exception){
@@ -46,6 +47,6 @@ public class TokenService {
 
 
     private Instant dataExpiracao() {
-        return LocalDateTime.now().plusMonths(1).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusHours(12).toInstant(ZoneOffset.of("-03:00"));
     }
 }
