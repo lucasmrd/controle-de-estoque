@@ -58,4 +58,13 @@ public class FuncionarioController {
 
         return service.gastosFuncionarios(mes, ano, pageable);
     }
+
+    @GetMapping("/gastos-funcionarios/folha")
+    public ResponseEntity<Page<GastoFuncionarioResponse>> gastosFuncionariosDescontoEmFolha(
+            @RequestParam int mes,
+            @RequestParam int ano,
+            @PageableDefault Pageable pageable) {
+
+        return service.gastosFuncionariosDescontoEmFolha(mes, ano, pageable);
+    }
 }
