@@ -35,4 +35,19 @@ public interface VendaRepository extends JpaRepository<Venda, UUID> {
             @Param("mes") int mes,
             @Param("ano") int ano,
             Pageable pageable);
+
+    @Query(value = "SELECT f.id AS idFuncionario, f.nome AS nomeFuncionario, " +
+            "SUM(vp.valor * vp.quantidade) AS totalGasto " +
+            "FROM vendas v " +
+            "JOIN funcionarios f ON f.id = v.id_funcionario " +
+            "JOIN venda_produto vp ON vp.id_venda = v.id " +
+            "WHERE f.ativo = true " +
+            "AND v.pagamento = 'Desconto em folha' " +
+            "AND EXTRACT(MONTH FROM v.data) = :mes " +
+            "AND EXTRACT(YEAR FROM v.data) = :ano " +
+            "GROUP BY f.id", nativeQuery = true)
+    Page<GastoFuncionarioResponse> findGastosFuncionariosDescontoEmFolha(
+            @Param("mes") int mes,
+            @Param("ano") int ano,
+            Pageable pageable);
 }

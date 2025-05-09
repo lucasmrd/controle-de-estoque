@@ -76,4 +76,9 @@ public class FuncionarioService {
 
         return ResponseEntity.ok(gastos);
     }
+
+    public ResponseEntity<Page<GastoFuncionarioResponse>> gastosFuncionariosDescontoEmFolha(int mes, int ano, Pageable pageable) {
+        Page<GastoFuncionarioResponse> gastos = vendaRepository.findGastosFuncionariosDescontoEmFolha(mes, ano, pageable);
+        return ResponseEntity.ok(gastos);
+    }
 }

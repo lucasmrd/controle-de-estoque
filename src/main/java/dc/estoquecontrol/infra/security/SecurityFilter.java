@@ -1,5 +1,7 @@
 package dc.estoquecontrol.infra.security;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import dc.estoquecontrol.repository.UserRepository;
 import dc.estoquecontrol.service.TokenService;
 import jakarta.servlet.FilterChain;
@@ -28,15 +30,21 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var jwt = recuperarToken(request);
 
-        if (jwt != null) {
-            var subject = tokenService.getSubject(jwt);
-            var user = userRepository.findByUsername(subject);
+        try {
+            if (jwt != null) {
+                var subject = tokenService.getSubject(jwt);
+                var user = userRepository.findByUsername(subject);
 
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+
+            filterChain.doFilter(request, response);
+        } catch (TokenExpiredException e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expirado");
+        } catch (JWTVerificationException e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
         }
-
-        filterChain.doFilter(request, response);
     }
 
     private String recuperarToken(HttpServletRequest request) {
