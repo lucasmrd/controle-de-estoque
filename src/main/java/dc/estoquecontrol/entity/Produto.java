@@ -2,8 +2,10 @@ package dc.estoquecontrol.entity;
 
 import dc.estoquecontrol.dto.request.AtualizarProdutoRequest;
 import dc.estoquecontrol.dto.request.CriarProdutoRequest;
+import dc.estoquecontrol.infra.exception.EstoqueInsuficienteException;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -60,7 +62,7 @@ public class Produto {
 
     public void subtrairQuantidade(Integer quantidadeSaida) {
         if (this.quantidade < quantidadeSaida) {
-            throw new IllegalArgumentException("Estoque insuficiente para o produto: " + this.nome);
+            throw new EstoqueInsuficienteException("Estoque insuficiente para o produto: " + this.nome);
         }
         this.quantidade -= quantidadeSaida;
     }
