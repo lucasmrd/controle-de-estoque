@@ -3,6 +3,7 @@ package dc.estoquecontrol.controller;
 import dc.estoquecontrol.dto.request.AtualizarProdutoRequest;
 import dc.estoquecontrol.dto.request.CriarProdutoRequest;
 import dc.estoquecontrol.dto.response.MostrarProdutoResponse;
+import dc.estoquecontrol.entity.Categoria;
 import dc.estoquecontrol.service.ProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,10 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<MostrarProdutoResponse>> listarTodosOsProdutos(@PageableDefault(size = 20) Pageable pageable) {
-        return service.listarTodosOsProdutos(pageable);
+    public ResponseEntity<Page<MostrarProdutoResponse>> listarTodosOsProdutos(
+            @RequestParam(value = "categoria", required = false) Categoria categoria,
+            @PageableDefault(size = 20) Pageable pageable) {
+        return service.listarTodosOsProdutos(categoria, pageable);
     }
 
     @GetMapping("/{id}")
@@ -45,5 +48,4 @@ public class ProdutoController {
     public ResponseEntity deletar(@PathVariable UUID id) {
         return service.deletar(id);
     }
-
 }

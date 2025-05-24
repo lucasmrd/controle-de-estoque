@@ -3,6 +3,7 @@ package dc.estoquecontrol.service;
 import dc.estoquecontrol.dto.request.AtualizarProdutoRequest;
 import dc.estoquecontrol.dto.request.CriarProdutoRequest;
 import dc.estoquecontrol.dto.response.MostrarProdutoResponse;
+import dc.estoquecontrol.entity.Categoria;
 import dc.estoquecontrol.entity.Produto;
 import dc.estoquecontrol.repository.ProdutoRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.UUID;
@@ -35,10 +37,21 @@ public class ProdutoService {
         return ResponseEntity.created(uri).body(dtoResponse);
     }
 
-    public ResponseEntity<Page<MostrarProdutoResponse>> listarTodosOsProdutos(Pageable pageable) {
-        var page = repository.findAllByAtivoTrue(pageable).map(MostrarProdutoResponse::new);
+    public ResponseEntity<Page<MostrarProdutoResponse>> listarTodosOsProdutos(
+            @RequestParam(required = false) Categoria categoria,
+            Pageable pageable) {
 
-        return ResponseEntity.ok(page);
+        Page<Produto> page;
+        if (categoria != null) {
+            page = repository.
+                    findAllByAtivoTrueAndCategoria(categoria, pageable);
+        } else {
+            page = repository.findAllByAtivoTrue(pageable);
+        }
+
+        Page<MostrarProdutoResponse> dtoPage = page.map(MostrarProdutoResponse::new);
+
+        return ResponseEntity.ok(dtoPage);
     }
 
     public ResponseEntity listarProdutoPorId(UUID id) {
