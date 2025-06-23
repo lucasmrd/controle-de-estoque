@@ -23,7 +23,7 @@ public interface VendaRepository extends JpaRepository<Venda, UUID> {
     Page<Venda> findByAno(@Param("ano") int ano, Pageable pageable);
 
     @Query(value = "SELECT f.id AS idFuncionario, f.nome AS nomeFuncionario, " +
-            "SUM(vp.valor * vp.quantidade) AS totalGasto " +
+            "SUM(vp.valor) AS totalGasto " +
             "FROM vendas v " +
             "JOIN funcionarios f ON f.id = v.id_funcionario " +
             "JOIN venda_produto vp ON vp.id_venda = v.id " +
@@ -37,7 +37,7 @@ public interface VendaRepository extends JpaRepository<Venda, UUID> {
             Pageable pageable);
 
     @Query(value = "SELECT f.id AS idFuncionario, f.nome AS nomeFuncionario, " +
-            "SUM(vp.valor * vp.quantidade) AS totalGasto " +
+            "SUM(vp.valor) AS totalGasto " +
             "FROM vendas v " +
             "JOIN funcionarios f ON f.id = v.id_funcionario " +
             "JOIN venda_produto vp ON vp.id_venda = v.id " +
