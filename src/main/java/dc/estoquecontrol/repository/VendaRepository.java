@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ public interface VendaRepository extends JpaRepository<Venda, UUID> {
     Page<Venda> findByAno(@Param("ano") int ano, Pageable pageable);
 
     @Query(value = "SELECT f.id AS idFuncionario, f.nome AS nomeFuncionario, " +
-            "SUM(vp.valor * vp.quantidade) AS totalGasto " +
+            "SUM(vp.valor) AS totalGasto " +
             "FROM vendas v " +
             "JOIN funcionarios f ON f.id = v.id_funcionario " +
             "JOIN venda_produto vp ON vp.id_venda = v.id " +
@@ -37,7 +38,7 @@ public interface VendaRepository extends JpaRepository<Venda, UUID> {
             Pageable pageable);
 
     @Query(value = "SELECT f.id AS idFuncionario, f.nome AS nomeFuncionario, " +
-            "SUM(vp.valor * vp.quantidade) AS totalGasto " +
+            "SUM(vp.valor) AS totalGasto " +
             "FROM vendas v " +
             "JOIN funcionarios f ON f.id = v.id_funcionario " +
             "JOIN venda_produto vp ON vp.id_venda = v.id " +
@@ -50,4 +51,39 @@ public interface VendaRepository extends JpaRepository<Venda, UUID> {
             @Param("mes") int mes,
             @Param("ano") int ano,
             Pageable pageable);
+
+    @Query(value = """
+    SELECT f.id AS idFuncionario, f.nome AS nomeFuncionario,
+           SUM(vp.valor) AS totalGasto
+      FROM vendas v
+      JOIN funcionarios f ON f.id = v.id_funcionario
+      JOIN venda_produto vp ON vp.id_venda = v.id
+     WHERE f.ativo = true
+       AND v.data BETWEEN :dataInicio AND :dataFim
+     GROUP BY f.id
+    """,
+            nativeQuery = true)
+    Page<GastoFuncionarioResponse> findGastosPorPeriodo(
+            @Param("dataInicio") LocalDate dataInicio,
+            @Param("dataFim") LocalDate dataFim,
+            Pageable pageable
+    );
+
+    @Query(value = """
+    SELECT f.id AS idFuncionario, f.nome AS nomeFuncionario,
+           SUM(vp.valor) AS totalGasto
+      FROM vendas v
+      JOIN funcionarios f ON f.id = v.id_funcionario
+      JOIN venda_produto vp ON vp.id_venda = v.id
+     WHERE f.ativo = true
+       AND v.pagamento = 'Desconto em folha'
+       AND v.data BETWEEN :dataInicio AND :dataFim
+     GROUP BY f.id
+    """,
+            nativeQuery = true)
+    Page<GastoFuncionarioResponse> findGastosPorPeriodoDescontoEmFolha(
+            @Param("dataInicio") LocalDate dataInicio,
+            @Param("dataFim") LocalDate dataFim,
+            Pageable pageable
+    );
 }
