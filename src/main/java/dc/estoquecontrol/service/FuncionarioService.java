@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
@@ -79,6 +80,26 @@ public class FuncionarioService {
 
     public ResponseEntity<Page<GastoFuncionarioResponse>> gastosFuncionariosDescontoEmFolha(int mes, int ano, Pageable pageable) {
         Page<GastoFuncionarioResponse> gastos = vendaRepository.findGastosFuncionariosDescontoEmFolha(mes, ano, pageable);
+        return ResponseEntity.ok(gastos);
+    }
+
+    public ResponseEntity<Page<GastoFuncionarioResponse>> gastosFuncionariosPorPeriodo(
+            LocalDate dataInicio,
+            LocalDate dataFim,
+            Pageable pageable) {
+
+        Page<GastoFuncionarioResponse> gastos = vendaRepository.findGastosPorPeriodo(dataInicio, dataFim, pageable);
+
+        return ResponseEntity.ok(gastos);
+    }
+
+    public ResponseEntity<Page<GastoFuncionarioResponse>> gastosFuncionariosDescontoEmFolhaPorPeriodo(
+            LocalDate dataInicio,
+            LocalDate dataFim,
+            Pageable pageable) {
+
+        Page<GastoFuncionarioResponse> gastos = vendaRepository.findGastosPorPeriodoDescontoEmFolha(dataInicio, dataFim, pageable);
+
         return ResponseEntity.ok(gastos);
     }
 }
