@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -147,5 +148,38 @@ public class VendaService {
                 });
 
         return ResponseEntity.ok(page);
+    }
+
+    public ResponseEntity<Page<MostrarVendaResponse>> filtrarPorNome(
+            String nome, Pageable pageable
+    ) {
+        Page<Venda> page = vendaRepository.findByNome(nome, pageable);
+        Page<MostrarVendaResponse> dto = page.map(this::toDto);
+        return ResponseEntity.ok(dto);
+    }
+
+    public ResponseEntity<Page<MostrarVendaResponse>> filtrarPorPeriodo(
+            LocalDate dataInicio, LocalDate dataFim, Pageable pageable
+    ) {
+        Page<Venda> page = vendaRepository.findByPeriodo(dataInicio, dataFim, pageable);
+        Page<MostrarVendaResponse> dto = page.map(this::toDto);
+        return ResponseEntity.ok(dto);
+    }
+
+    public ResponseEntity<Page<MostrarVendaResponse>> filtrarPorPeriodoENome(
+            LocalDate dataInicio, LocalDate dataFim, String nome, Pageable pageable
+    ) {
+        Page<Venda> page = vendaRepository.findByPeriodoAndNome(dataInicio, dataFim, nome, pageable);
+        Page<MostrarVendaResponse> dto = page.map(this::toDto);
+        return ResponseEntity.ok(dto);
+    }
+
+    private MostrarVendaResponse toDto(Venda v) {
+        var itens = v.getVendaProdutos().stream()
+                .map(vp -> new ItemVendaResponseDTO(
+                        vp.getProduto().getNome(), vp.getQuantidade(), vp.getValor()
+                ))
+                .toList();
+        return new MostrarVendaResponse(v, v.getFuncionario(), itens);
     }
 }

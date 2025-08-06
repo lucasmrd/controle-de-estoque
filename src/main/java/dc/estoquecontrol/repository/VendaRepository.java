@@ -86,4 +86,43 @@ public interface VendaRepository extends JpaRepository<Venda, UUID> {
             @Param("dataFim") LocalDate dataFim,
             Pageable pageable
     );
+
+    @Query(value = """
+    SELECT v.*
+      FROM vendas v
+     WHERE v.data BETWEEN :dataInicio AND :dataFim
+      ORDER BY v.data ASC
+  """, nativeQuery = true)
+    Page<Venda> findByPeriodo(
+            @Param("dataInicio") LocalDate dataInicio,
+            @Param("dataFim")    LocalDate dataFim,
+            Pageable pageable
+    );
+
+    @Query(value = """
+    SELECT v.*
+      FROM vendas v
+      JOIN funcionarios f ON f.id = v.id_funcionario
+     WHERE LOWER(f.nome) LIKE LOWER(CONCAT('%', :nome, '%'))
+      ORDER BY v.data ASC
+  """, nativeQuery = true)
+    Page<Venda> findByNome(
+            @Param("nome") String nome,
+            Pageable pageable
+    );
+
+    @Query(value = """
+    SELECT v.*
+      FROM vendas v
+      JOIN funcionarios f ON f.id = v.id_funcionario
+     WHERE v.data BETWEEN :dataInicio AND :dataFim
+       AND LOWER(f.nome) LIKE LOWER(CONCAT('%', :nome, '%'))
+      ORDER BY v.data ASC
+  """, nativeQuery = true)
+    Page<Venda> findByPeriodoAndNome(
+            @Param("dataInicio") LocalDate dataInicio,
+            @Param("dataFim")    LocalDate dataFim,
+            @Param("nome")       String nome,
+            Pageable pageable
+    );
 }
