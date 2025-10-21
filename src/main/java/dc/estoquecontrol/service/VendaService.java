@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,6 +64,7 @@ public class VendaService {
 
         List<ItemVendaResponseDTO> itens = venda.getVendaProdutos().stream().map(vp ->
                 new ItemVendaResponseDTO(
+                        vp.getProduto().getId(),
                         vp.getProduto().getNome(),
                         vp.getQuantidade(),
                         vp.getValor()
@@ -74,6 +76,60 @@ public class VendaService {
         return ResponseEntity.ok(vendaResponse);
     }
 
+    @Transactional
+    public ResponseEntity<MostrarVendaResponse> atualizarVenda(UUID id, CriarVendaRequest dto) {
+        var venda = vendaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Venda não encontrada"));
+
+        var funcionario = funcionarioRepository.getReferenceById(dto.idFuncionario());
+
+        // Repor quantidades antigas antes de sobrescrever
+        for (VendaProduto vpAntigo : venda.getVendaProdutos()) {
+            Produto p = vpAntigo.getProduto();
+            p.somarQuantidade(vpAntigo.getQuantidade()); // método que devolve o estoque anterior
+        }
+
+        // Limpar a lista antiga para substituí-la
+        venda.getVendaProdutos().clear();
+
+        // Criar nova lista de produtos da venda atualizada
+        List<VendaProduto> novosVendaProdutos = dto.produtos().stream().map(produtoDTO -> {
+            Produto produto = produtoRepository.getReferenceById(produtoDTO.idProduto());
+            produto.subtrairQuantidade(produtoDTO.quantidade());
+
+            BigDecimal valorCalculado = produto.getPreco()
+                    .multiply(BigDecimal.valueOf(produtoDTO.quantidade()));
+
+            VendaProduto vp = new VendaProduto();
+            vp.setVenda(venda);
+            vp.setProduto(produto);
+            vp.setQuantidade(produtoDTO.quantidade());
+            vp.setValor(valorCalculado);
+            return vp;
+        }).collect(Collectors.toList());
+
+        // Atualizar dados básicos da venda
+        venda.setFuncionario(funcionario);
+        venda.setPagamento(dto.pagamento());
+        venda.setData(dto.data());
+        venda.setVendaProdutos(novosVendaProdutos);
+
+        vendaRepository.save(venda);
+
+        List<ItemVendaResponseDTO> itens = venda.getVendaProdutos().stream()
+                .map(vp -> new ItemVendaResponseDTO(
+                        vp.getProduto().getId(),
+                        vp.getProduto().getNome(),
+                        vp.getQuantidade(),
+                        vp.getValor()
+                ))
+                .toList();
+
+        var response = new MostrarVendaResponse(venda, funcionario, itens);
+
+        return ResponseEntity.ok(response);
+    }
+
     public ResponseEntity<Page<MostrarVendaResponse>> listarTodasAsvendas(Pageable pageable) {
         Page<MostrarVendaResponse> page = vendaRepository.findAll(pageable)
                 .map(venda -> {
@@ -81,6 +137,7 @@ public class VendaService {
 
                     List<ItemVendaResponseDTO> itens = venda.getVendaProdutos().stream()
                             .map(vp -> new ItemVendaResponseDTO(
+                                    vp.getProduto().getId(),
                                     vp.getProduto().getNome(),
                                     vp.getQuantidade(),
                                     vp.getValor()
@@ -100,6 +157,7 @@ public class VendaService {
 
                     List<ItemVendaResponseDTO> itens = venda.getVendaProdutos().stream()
                             .map(vp -> new ItemVendaResponseDTO(
+                                    vp.getProduto().getId(),
                                     vp.getProduto().getNome(),
                                     vp.getQuantidade(),
                                     vp.getValor()
@@ -119,6 +177,7 @@ public class VendaService {
 
                     List<ItemVendaResponseDTO> itens = venda.getVendaProdutos().stream()
                             .map(vp -> new ItemVendaResponseDTO(
+                                    vp.getProduto().getId(),
                                     vp.getProduto().getNome(),
                                     vp.getQuantidade(),
                                     vp.getValor()
@@ -138,6 +197,7 @@ public class VendaService {
 
                     List<ItemVendaResponseDTO> itens = venda.getVendaProdutos().stream()
                             .map(vp -> new ItemVendaResponseDTO(
+                                    vp.getProduto().getId(),
                                     vp.getProduto().getNome(),
                                     vp.getQuantidade(),
                                     vp.getValor()
@@ -177,7 +237,7 @@ public class VendaService {
     private MostrarVendaResponse toDto(Venda v) {
         var itens = v.getVendaProdutos().stream()
                 .map(vp -> new ItemVendaResponseDTO(
-                        vp.getProduto().getNome(), vp.getQuantidade(), vp.getValor()
+                        vp.getProduto().getId(), vp.getProduto().getNome(), vp.getQuantidade(), vp.getValor()
                 ))
                 .toList();
         return new MostrarVendaResponse(v, v.getFuncionario(), itens);
